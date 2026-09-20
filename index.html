@@ -10,19 +10,20 @@
 
 <style>
   :root{
-    --paper:#efe4cd;
-    --surface:#faf4e6;
-    --surface-2:#e6d9bc;
-    --ink:#241611;
-    --ink-soft:#5b4636;
-    --cocoa:#3c2415;
-    --maroon:#7a2230;
-    --maroon-soft:#a5535f;
-    --gold:#a9781f;
-    --gold-soft:#d9b463;
-    --line:#c9b98f;
-    --line-soft:#dccfa9;
-    --shadow: 0 1px 0 rgba(36,22,17,.06);
+    --paper:#ffffff;
+    --surface:#ffffff;
+    --surface-2:#f9f2f0;
+    --ink:#491714;
+    --ink-soft:#7a4d47;
+    --cocoa:#491714;
+    --maroon:#d45443;
+    --maroon-soft:#e08a7d;
+    --accent-text:#b93f2e;
+    --gold:#a8702a;
+    --gold-soft:#d9a160;
+    --line:#e7d6d2;
+    --line-soft:#f1e5e2;
+    --shadow: none;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -32,7 +33,7 @@
       --ink:#f2e6d3;
       --ink-soft:#c8b79c;
       --cocoa:#f2e6d3;
-      --maroon:#e2828f;
+      --maroon:#e8735f;--accent-text:#f0917f;
       --maroon-soft:#c96b78;
       --gold:#e0b45c;
       --gold-soft:#8a6a2f;
@@ -48,7 +49,7 @@
     --ink:#f2e6d3;
     --ink-soft:#c8b79c;
     --cocoa:#f2e6d3;
-    --maroon:#e2828f;
+    --maroon:#e8735f;--accent-text:#f0917f;
     --maroon-soft:#c96b78;
     --gold:#e0b45c;
     --gold-soft:#8a6a2f;
@@ -85,9 +86,7 @@
     position:relative;
     padding-block:clamp(56px,9vw,96px) clamp(40px,6vw,64px);
     border-bottom:1px solid var(--line);
-    background:
-      radial-gradient(ellipse 60% 50% at 85% 0%, color-mix(in srgb, var(--gold) 16%, transparent), transparent),
-      var(--paper);
+    background:var(--paper);
   }
   .eyebrow{
     font-family:'IBM Plex Mono',monospace;
@@ -461,6 +460,9 @@
   .flav-card h3{font-size:1.1rem;}
   .flav-card p{font-size:.9rem;color:var(--ink-soft);}
   .flav-region{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--maroon);}
+  a,.eyebrow,.flav-region,.aud-card .tag,.persona-head .role,.phase.solo .tag,.brain-card.chosen .status,.form-item.winner .name{color:var(--accent-text);}
+  .eyebrow::before{background:var(--accent-text);}
+  .usp-banner{color:#fff;}
 </style>
 </head>
 <body>
