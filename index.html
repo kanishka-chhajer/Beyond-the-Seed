@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beyond the Seed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#efe4cd;
+    --surface:#faf4e6;
+    --surface-2:#e6d9bc;
+    --ink:#241611;
+    --ink-soft:#5b4636;
+    --cocoa:#3c2415;
+    --maroon:#7a2230;
+    --maroon-soft:#a5535f;
+    --gold:#a9781f;
+    --gold-soft:#d9b463;
+    --line:#c9b98f;
+    --line-soft:#dccfa9;
+    --shadow: 0 1px 0 rgba(36,22,17,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#1a120c;
+      --surface:#241811;
+      --surface-2:#2e2015;
+      --ink:#f2e6d3;
+      --ink-soft:#c8b79c;
+      --cocoa:#f2e6d3;
+      --maroon:#e2828f;
+      --maroon-soft:#c96b78;
+      --gold:#e0b45c;
+      --gold-soft:#8a6a2f;
+      --line:#4a382a;
+      --line-soft:#3a2c20;
+      --shadow: 0 1px 0 rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1a120c;
+    --surface:#241811;
+    --surface-2:#2e2015;
+    --ink:#f2e6d3;
+    --ink-soft:#c8b79c;
+    --cocoa:#f2e6d3;
+    --maroon:#e2828f;
+    --maroon-soft:#c96b78;
+    --gold:#e0b45c;
+    --gold-soft:#8a6a2f;
+    --line:#4a382a;
+    --line-soft:#3a2c20;
+    --shadow: 0 1px 0 rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Karla',sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    padding-inline:0;
+  }
+  ::selection{background:var(--gold-soft);color:var(--cocoa);}
+
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    color:var(--cocoa);
+    text-wrap:balance;
+    margin:0;
+  }
+  a{color:var(--maroon);}
+  p{margin:0;}
+
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(18px,4vw,56px);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding-block:clamp(56px,9vw,96px) clamp(40px,6vw,64px);
+    border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(ellipse 60% 50% at 85% 0%, color-mix(in srgb, var(--gold) 16%, transparent), transparent),
+      var(--paper);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--maroon);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--maroon);display:inline-block;}
+  .hero h1{
+    font-size:clamp(2.6rem,6vw,4.6rem);
+    line-height:.98;
+    margin-top:18px;
+    max-width:14ch;
+  }
+  .hero h1 em{font-style:italic;color:var(--maroon);font-weight:500;}
+  .hero-sub{
+    margin-top:22px;
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    max-width:56ch;
+  }
+  .hero-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    margin-top:36px;
+    padding-top:24px;
+    border-top:1px solid var(--line-soft);
+  }
+  .hero-meta div{display:flex;flex-direction:column;gap:4px;}
+  .hero-meta .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+  .hero-meta .v{font-size:.98rem;color:var(--ink);font-weight:600;}
+
+  /* ---------- LAYOUT: TOC + CONTENT ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns:220px minmax(0,1fr);
+    gap:clamp(24px,4vw,64px);
+    align-items:start;
+    padding-block:clamp(32px,5vw,56px);
+  }
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;}
+    .toc{display:none;}
+  }
+  .toc{
+    position:sticky;
+    top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    border-left:1px solid var(--line);
+    padding-left:16px;
+  }
+  .toc a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    padding-block:6px;
+    display:flex;
+    gap:8px;
+    border-left:2px solid transparent;
+    margin-left:-17px;
+    padding-left:15px;
+  }
+  .toc a:hover{color:var(--maroon);border-left-color:var(--gold-soft);}
+  .toc a span{color:var(--gold);flex-shrink:0;}
+
+  .content{display:flex;flex-direction:column;gap:clamp(52px,7vw,84px);min-width:0;}
+
+  section{scroll-margin-top:20px;}
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .sec-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--gold);
+    letter-spacing:.05em;
+  }
+  .sec-head h2{font-size:clamp(1.5rem,3vw,2rem);}
+  .sec-kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+    display:block;
+  }
+
+  .lede{font-size:1.05rem;color:var(--ink-soft);max-width:70ch;margin-bottom:28px;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:4px;
+    box-shadow:var(--shadow);
+  }
+
+  /* phase split */
+  .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:640px){.phase-grid{grid-template-columns:1fr;}}
+  .phase{padding:24px 26px;}
+  .phase .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:3px 9px;
+    border-radius:20px;
+    display:inline-block;
+  }
+  .phase.group .tag{background:color-mix(in srgb, var(--gold) 20%, transparent);color:var(--gold);}
+  .phase.solo .tag{background:color-mix(in srgb, var(--maroon) 16%, transparent);color:var(--maroon);}
+  .phase h3{font-size:1.15rem;margin-top:12px;}
+  .phase p{margin-top:10px;color:var(--ink-soft);font-size:.96rem;}
+  .phase-note{
+    margin-top:16px;
+    padding:14px 26px;
+    font-size:.92rem;
+    color:var(--ink-soft);
+    border-top:1px dashed var(--line);
+  }
+  .phase-note b{color:var(--ink);}
+
+  /* brainstorm cards */
+  .brain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:880px){.brain-grid{grid-template-columns:1fr;}}
+  .brain-card{padding:22px 22px 24px;display:flex;flex-direction:column;gap:10px;}
+  .brain-card.dropped{opacity:.72;}
+  .brain-card.chosen{border-color:var(--maroon);box-shadow:inset 0 0 0 1px var(--maroon);}
+  .brain-card .status{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .brain-card.chosen .status{color:var(--maroon);}
+  .brain-card h3{font-size:1.15rem;}
+  .brain-card p{font-size:.92rem;color:var(--ink-soft);}
+  .brain-card .stat{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--gold);margin-top:2px;}
+
+  .form-list{margin-top:26px;}
+  .form-list-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px;display:block;}
+  .form-item{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    gap:18px;
+    padding:14px 0;
+    border-top:1px solid var(--line-soft);
+  }
+  @media(max-width:640px){.form-item{grid-template-columns:1fr;gap:4px;}}
+  .form-item:last-child{border-bottom:1px solid var(--line-soft);}
+  .form-item .name{font-weight:600;font-family:'Fraunces',serif;font-size:1.02rem;}
+  .form-item .desc{color:var(--ink-soft);font-size:.93rem;}
+  .form-item .desc ul{margin:6px 0 0;padding-left:18px;}
+  .form-item.winner{background:color-mix(in srgb, var(--maroon) 5%, transparent);}
+  .form-item.winner .name{color:var(--maroon);}
+
+  /* pivot */
+  .pivot-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;}
+  @media(max-width:880px){.pivot-grid{grid-template-columns:1fr;}}
+  .study-card{padding:24px 26px;}
+  .study-card h3{font-size:1.05rem;margin-bottom:8px;}
+  .study-card p{color:var(--ink-soft);font-size:.93rem;}
+  .score-box{
+    margin-top:16px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    padding-top:16px;
+    border-top:1px solid var(--line-soft);
+  }
+  .score-box .num{font-family:'Fraunces',serif;font-size:2.6rem;color:var(--maroon);line-height:1;}
+  .score-box .lbl{font-size:.85rem;color:var(--ink-soft);max-width:22ch;}
+  .learnings{display:flex;flex-direction:column;gap:0;}
+  .learn-item{
+    display:flex;
+    gap:14px;
+    padding:16px 0;
+    border-top:1px solid var(--line-soft);
+  }
+  .learn-item:first-child{border-top:none;padding-top:0;}
+  .learn-item .dot{
+    width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:8px;
+  }
+  .learn-item p{font-size:.93rem;color:var(--ink-soft);}
+
+  /* market stats */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  @media(max-width:880px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+  .stat-cell{background:var(--surface);padding:24px 20px;display:flex;flex-direction:column;gap:6px;}
+  .stat-cell .big{font-family:'Fraunces',serif;font-size:2.1rem;color:var(--cocoa);line-height:1;}
+  .stat-cell .big span{color:var(--maroon);}
+  .stat-cell .lbl{font-size:.82rem;color:var(--ink-soft);}
+  .market-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+  @media(max-width:640px){.market-cols{grid-template-columns:1fr;}}
+  .market-col{padding:22px 24px;}
+  .market-col h3{font-size:1.05rem;margin-bottom:10px;}
+  .market-col p{font-size:.92rem;color:var(--ink-soft);}
+  .market-col p + p{margin-top:10px;}
+
+  /* 5w1h */
+  .w-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:880px){.w-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.w-grid{grid-template-columns:1fr;}}
+  .w-card{padding:20px 22px;display:flex;flex-direction:column;gap:10px;}
+  .w-card .w-letter{font-family:'Fraunces',serif;font-style:italic;font-size:1.6rem;color:var(--gold);line-height:1;}
+  .w-card .q{font-weight:600;font-size:.9rem;}
+  .w-card .a{font-size:.88rem;color:var(--ink-soft);}
+  .w-card .a + .q{margin-top:8px;padding-top:10px;border-top:1px solid var(--line-soft);}
+
+  /* audience */
+  .aud-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:880px){.aud-grid{grid-template-columns:1fr;}}
+  .aud-card{padding:26px 26px 28px;}
+  .aud-card .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--maroon);}
+  .aud-card h3{font-size:1.2rem;margin-top:10px;}
+  .aud-facts{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-top:16px;padding:16px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);}
+  .aud-facts div .k{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);}
+  .aud-facts div .v{font-size:.9rem;margin-top:2px;}
+  .aud-list{margin-top:16px;}
+  .aud-list .h{font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .aud-list ul{margin:0 0 14px;padding-left:18px;font-size:.9rem;color:var(--ink-soft);}
+  .aud-list ul li{margin-bottom:4px;}
+  .wider-tg{margin-top:8px;padding:20px 24px;font-size:.92rem;color:var(--ink-soft);}
+  .wider-tg b{color:var(--ink);}
+
+  /* personas */
+  .persona{padding:0;overflow:hidden;}
+  .persona-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    padding:26px 28px;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .persona-head h3{font-size:1.4rem;}
+  .persona-head .role{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--maroon);margin-top:4px;display:block;}
+  .persona-facts{display:flex;gap:22px;flex-wrap:wrap;}
+  .persona-facts div{display:flex;flex-direction:column;gap:3px;min-width:80px;}
+  .persona-facts .k{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);}
+  .persona-facts .v{font-size:.86rem;font-weight:600;}
+  .persona-body{padding:24px 28px 28px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media(max-width:640px){.persona-body{grid-template-columns:1fr;}}
+  .persona-body .h{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;display:block;}
+  .persona-body ul{margin:0;padding-left:18px;font-size:.9rem;color:var(--ink-soft);}
+  .persona-body ul li{margin-bottom:6px;}
+  .quote{
+    margin:0 28px 26px;
+    padding:18px 22px;
+    border-left:3px solid var(--maroon);
+    background:color-mix(in srgb, var(--maroon) 6%, transparent);
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1.02rem;
+    color:var(--ink);
+  }
+
+  /* competitors */
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  th{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  td{padding:14px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft);}
+  td.brand{color:var(--ink);font-weight:700;font-family:'Fraunces',serif;font-size:1rem;}
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:var(--surface);}
+  .table-scroll table{min-width:640px;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.75rem;font-family:'IBM Plex Mono',monospace;}
+  .pill.none{background:var(--line-soft);color:var(--ink-soft);}
+  .pill.has{background:color-mix(in srgb, var(--gold) 22%, transparent);color:var(--gold);}
+
+  .pos-map{padding:28px;margin-top:20px;}
+  .pos-map svg{width:100%;height:auto;display:block;}
+  .pos-note{font-size:.82rem;color:var(--ink-soft);margin-top:14px;font-style:italic;}
+
+  /* claims + costing */
+  .claims-table td:first-child{color:var(--ink);font-weight:600;white-space:nowrap;}
+  .cost-table td:nth-child(2){font-family:'IBM Plex Mono',monospace;color:var(--gold);font-weight:600;white-space:nowrap;}
+  .usp-banner{
+    padding:26px 30px;
+    margin-bottom:24px;
+    background:var(--cocoa);
+    color:var(--surface);
+    border-radius:4px;
+  }
+  :root:not([data-theme="light"]) .usp-banner{background:var(--surface-2);color:var(--ink);}
+  :root[data-theme="dark"] .usp-banner{background:var(--surface-2);color:var(--ink);}
+  .usp-banner p{font-family:'Fraunces',serif;font-size:1.15rem;font-style:italic;line-height:1.5;}
+
+  /* gallery / placeholders */
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:880px){.gallery-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.gallery-grid{grid-template-columns:1fr;}}
+  .placeholder{
+    aspect-ratio:4/5;
+    border:1.5px dashed var(--line);
+    border-radius:4px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:20px;
+    text-align:center;
+    background:
+      repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 3%, transparent) 0 10px, transparent 10px 20px);
+    color:var(--ink-soft);
+  }
+  .placeholder .icon{font-size:1.6rem;opacity:.55;}
+  .placeholder .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;}
+  .placeholder .sub{font-size:.78rem;max-width:22ch;}
+  .gallery-cap{margin-top:8px;font-size:.82rem;color:var(--ink-soft);}
+  .gallery-cap b{color:var(--ink);}
+
+  .moodboard-flavours{margin-top:18px;padding:22px 24px;}
+  .moodboard-flavours .h{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px;display:block;}
+  .flav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;}
+  @media(max-width:640px){.flav-grid{grid-template-columns:1fr;}}
+  .flav-item{padding:10px 0;border-top:1px solid var(--line-soft);font-size:.9rem;}
+  .flav-item b{font-family:'Fraunces',serif;color:var(--ink);font-weight:600;}
+  .flav-item span{display:block;color:var(--ink-soft);font-size:.85rem;margin-top:2px;}
+
+  .notebook-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:640px){.notebook-grid{grid-template-columns:1fr;}}
+  .notebook-grid .placeholder{aspect-ratio:3/4;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding-block:28px;
+    margin-top:20px;
+  }
+  footer p{font-size:.82rem;color:var(--ink-soft);}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+
+  a.src{font-family:'IBM Plex Mono',monospace;font-size:.75rem;white-space:nowrap;}
+  .cite{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:.8rem !important;}
+  .study-card .sec-kicker{margin-bottom:6px;}
+  .persona-head .who{display:flex;align-items:center;gap:16px;}
+  .avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--surface);}
+  .placeholder.wide{aspect-ratio:auto;min-height:150px;}
+  .notebook-grid figure{margin:0;}
+  .notebook-grid img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:4px;}
+  .notebook-grid figcaption{margin-top:8px;font-size:.82rem;color:var(--ink-soft);}
+  .flav-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:880px){.flav-cards{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.flav-cards{grid-template-columns:1fr;}}
+  .flav-card{padding:22px;display:flex;flex-direction:column;gap:8px;}
+  .flav-card h3{font-size:1.1rem;}
+  .flav-card p{font-size:.9rem;color:var(--ink-soft);}
+  .flav-region{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--maroon);}
+</style>
+</head>
+<body>
+
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Packaging Design — Research Journal</span>
+    <h1>Beyond the <em>Seed</em></h1>
+    <p class="hero-sub">A discarded date seed, a novel chocolate formulation, and a premium gifting brand built for urban India — the full research trail from group brainstorm to individual positioning.</p>
+    <div class="hero-meta">
+      <div><span class="k">Course</span><span class="v">Packaging Design</span></div>
+      <div><span class="k">Duration</span><span class="v">3 weeks</span></div>
+      <div><span class="k">Individual segment</span><span class="v">Chocolate gifting</span></div>
+      <div><span class="k">Author</span><span class="v">Kanishka</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+    <nav class="toc">
+      <a href="#phases"><span>01</span>Group vs individual</a>
+      <a href="#brainstorm"><span>02</span>Brainstorming</a>
+      <a href="#pivot"><span>03</span>Date seed in chocolate</a>
+      <a href="#market"><span>04</span>Market data</a>
+      <a href="#5w1h"><span>05</span>5W1H</a>
+      <a href="#audience"><span>06</span>Audience & personas</a>
+      <a href="#competitors"><span>07</span>Competitors & positioning</a>
+      <a href="#claims"><span>08</span>Claims & costing</a>
+      <a href="#flavours"><span>09</span>Flavour offering</a>
+    </nav>
+
+    <div class="content">
+
+      <!-- 01 PHASES -->
+      <section id="phases">
+        <div class="sec-head"><span class="sec-num">01</span><h2>Group vs. individual phase</h2></div>
+        <p class="lede">This project ran in two stages: three of us researched one shared concept together up to the research milestone, then each developed an independent brand direction from that shared foundation.</p>
+        <div class="card phase-grid">
+          <div class="phase group">
+            <span class="tag">Group · 3 of us</span>
+            <h3>Shared starting point</h3>
+            <p>Date seed was our common point. Together we explored ingredients, waste-to-value framing, and general market scoping up to the research stage.</p>
+          </div>
+          <div class="phase solo">
+            <span class="tag">Individual</span>
+            <h3>Chocolate gifting segment</h3>
+            <p>I took the shared date seed starting point in my own direction: dates and date seeds in chocolate, shaped into a chocolate gifting segment. From there I developed the target audience, brand personality, packaging structure and design direction.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 BRAINSTORM -->
+      <section id="brainstorm">
+        <div class="sec-head"><span class="sec-num">02</span><h2>Brainstorming</h2></div>
+        <p class="lede">A few ideas were explored before we settled on date seed as our base ingredient.</p>
+        <div class="brain-grid">
+          <div class="card brain-card dropped">
+            <span class="status">Considered</span>
+            <h3>Eggshell powder</h3>
+            <p>Agricultural waste rich in bioavailable calcium and trace minerals — supports bone, skin and joint health. Already used in nutraceuticals, cosmetics and soil enrichment.</p>
+          </div>
+          <div class="card brain-card dropped">
+            <span class="status">Considered</span>
+            <h3>Medical blister packs</h3>
+            <p>Problem: a strip's brand/medicine name is printed once across the full strip, so a cut piece becomes unreadable.</p>
+            <span class="stat">Dropped — a single design fix, not a brand opportunity</span>
+          </div>
+          <div class="card brain-card chosen">
+            <span class="status">Our base ingredient</span>
+            <h3>Date seed</h3>
+            <p>Date pits make up 10–15% of the fruit. With millions of tonnes of dates processed globally, this is a large, underutilised, near-zero-cost resource, mostly discarded or used as low-value feed.</p>
+            <span class="stat">Taken forward into form exploration →</span>
+          </div>
+        </div>
+
+        <div class="form-list">
+          <span class="form-list-title">Date seed — form explorations</span>
+          <div class="form-item">
+            <div class="name">Roasted seeds</div>
+            <div class="desc">Post-meal digestive snack — helps gut health.</div>
+          </div>
+          <div class="form-item">
+            <div class="name">Powder in a tea bag</div>
+            <div class="desc">A caffeine-alternative drink.</div>
+          </div>
+          <div class="form-item">
+            <div class="name">Date seed jam</div>
+            <div class="desc">A gut-healthy alternative to regular jam — stirred into milk, oats or smoothies.</div>
+          </div>
+          <div class="form-item">
+            <div class="name">Date seed syrup</div>
+            <div class="desc">Set aside — regular date syrup already exists commercially.</div>
+          </div>
+          <div class="form-item">
+            <div class="name">Date seed chewing gum</div>
+            <div class="desc">Gum is the second most common form of litter worldwide (<a href="https://get-green-now.com/environmental-impact-chewing-gum-infographic/" target="_blank" rel="noopener">source</a>), in a large chewing gum market (<a href="https://www.mordorintelligence.com/industry-reports/chewing-gum-market" target="_blank" rel="noopener">source</a>). Proposed solution: a biodegradable, plant-based gum — safe to swallow, or fully dissolving.</div>
+          </div>
+          <div class="form-item winner">
+            <div class="name">→ Dark chocolate gifting</div>
+            <div class="desc">My own direction: using dates and date seeds in chocolate, and building it into a gifting segment — detailed next.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 PIVOT -->
+      <section id="pivot">
+        <div class="sec-head"><span class="sec-num">03</span><h2>Date seed in chocolate</h2></div>
+        <p class="lede">My direction was to bring dates and date seeds into chocolate. The research I found showed date seed powder being used in chocolate formulations only recently (2025), which made the idea feel genuinely new.</p>
+
+        <div class="pivot-grid">
+          <div class="card study-card">
+            <span class="sec-kicker">Study 1</span>
+            <h3>Valorization of Date Seed Powder for Development of Enriched Chocolate – A Sensory Evaluation Study</h3>
+            <p>Loyola Academy, Secunderabad (2025). Chocolate was made with date seed powder at different concentrations. Sample B — 100 g cocoa powder, 13 g date seed powder, 40 g date syrup and 35 g butter — achieved the highest sensory score. Panelists noted balanced appearance, colour, aroma, taste and texture. Date seed powder improved colour, added a mild nutty flavour and enhanced nutrition without affecting stability.</p>
+            <div class="score-box">
+              <span class="num">8.5/9</span>
+              <span class="lbl">sensory score for Sample B, at 13% date seed powder.</span>
+            </div>
+            <p class="cite">Palety, K. K., Madamolla, B. S., Koriginja, M., &amp; Kambham, M. N. (2025). <i>International Journal of Engineering Research &amp; Technology (IJERT)</i>, 14(12). <a href="https://www.ijert.org/valorization-of-date-seed-powder-for-development-of-enriched-chocolate--a-sensory-evaluation-study" target="_blank" rel="noopener">Read the study</a></p>
+          </div>
+          <div class="card study-card">
+            <span class="sec-kicker">Study 2</span>
+            <h3>Utilization of the date seed powder in food manufacturing</h3>
+            <p>Found that crude fibre and total ash content increased as roasted date seed powder levels rose. Concluded that roasted date seed powder is suitable for chocolate production and may offer anti-cancer properties.</p>
+            <p class="cite">Bashir, M. M. A. (2026). <i>Sustainable Food Technology</i>, 4(2), 2187–2197. Royal Society of Chemistry. <a href="https://pubs.rsc.org/fb/article/4/2/2187/1236664/Utilization-of-the-date-seed-powder-in-food" target="_blank" rel="noopener">Read the study</a></p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:26px 28px;margin-top:16px;">
+          <span class="form-list-title">Where the research ends and my direction begins</span>
+          <p style="font-size:.93rem;color:var(--ink-soft);margin-bottom:18px;">Study 1 made its chocolate from cocoa powder, date syrup and butter, and does not label it dark or milk. So the 13% result is a starting point I am carrying into dark chocolate, not a finding that has been shown for dark chocolate. Everything below is my own reasoning built on these studies, and would need testing in a real formulation.</p>
+          <div class="learnings">
+            <div class="learn-item"><span class="dot"></span><p>Date seeds are almost universally discarded, so the ingredient story can be about waste valorisation rather than sourcing something premium.</p></div>
+            <div class="learn-item"><span class="dot"></span><p>13% date seed powder is where I would begin the formulation, since it scored highest in the study, then test it in a dark base.</p></div>
+            <div class="learn-item"><span class="dot"></span><p>I chose dark chocolate because I expect its natural bitterness and depth to suit the nutty, coffee-like quality of date seed powder.</p></div>
+            <div class="learn-item"><span class="dot"></span><p>Natural spice and fruit flavours (cardamom, orange, ginger, cinnamon, mango, rose) could be layered into the base formulation for variety.</p></div>
+            <div class="learn-item"><span class="dot"></span><p>In my search I did not find a dark chocolate with date seed powder in the Indian market, which suggests genuinely new territory.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 MARKET -->
+      <section id="market">
+        <div class="sec-head"><span class="sec-num">04</span><h2>Market data</h2></div>
+        <p class="lede">Two markets converge on this product: India's growing chocolate category, and its far larger gifting economy.</p>
+
+        <div class="stat-grid">
+          <div class="stat-cell"><span class="big">$2.63<span>B</span></span><span class="lbl">India chocolate market, 2024</span></div>
+          <div class="stat-cell"><span class="big">$5.32<span>B</span></span><span class="lbl">Projected by 2033 · 8.35% CAGR</span></div>
+          <div class="stat-cell"><span class="big"><span>+</span>40%</span><span class="lbl">Festive-season chocolate sales surge, 2024</span></div>
+          <div class="stat-cell"><span class="big"><span>+</span>35%</span><span class="lbl">YoY growth, dark chocolate specifically</span></div>
+        </div>
+
+        <div class="market-cols">
+          <div class="card market-col">
+            <h3>India's chocolate market</h3>
+            <p>Valued at USD 2,634 million in 2024, projected to reach USD 5,320 million by 2033 at a CAGR of 8.35%. The festive season alone saw a 40% surge in chocolate sales in 2024. <a class="src" href="https://www.astuteanalytica.com/industry-report/india-chocolate-market" target="_blank" rel="noopener">Source</a></p>
+            <p>Dark chocolate sales grew 35% year-over-year, with consumers citing antioxidant properties as a key purchase driver. The number of small-batch chocolate makers in India rose 40% in 2024.</p>
+          </div>
+          <div class="card market-col">
+            <h3>India's gifting market</h3>
+            <p>Valued at USD 75.16 billion in 2024, expected to reach USD 92.32 billion by 2030 — split across festival gifting ($7.5B), personal gifting ($20B) and corporate gifting ($2.5B). <a class="src" href="https://www.indianretailer.com/article/whats-hot/trends/Sudden-Boom-of-Gifting-Market-in-India.a5808" target="_blank" rel="noopener">Source</a></p>
+            <p>Corporate gifting alone contributes ~Rs. 12,000 crore and is growing 2–3x faster than consumer gifting. Diwali and festival seasons account for 40–45% of annual corporate gifting spend. <a class="src" href="https://www.bwdisrupt.com/article/unwrapped-potential-why-indias-gifting-market-needs-reinvention-567363" target="_blank" rel="noopener">Source</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 5W1H -->
+      <section id="5w1h">
+        <div class="sec-head"><span class="sec-num">05</span><h2>5W1H</h2></div>
+        <p class="lede">Framing the product, its buyer, and its context in one pass.</p>
+        <div class="w-grid">
+          <div class="card w-card">
+            <span class="w-letter">What</span>
+            <span class="q">What is the product?</span>
+            <span class="a">A premium Indian dark chocolate made with upcycled date seed powder, naturally sweetened with date syrup, in six distinct Indian flavours — sold as bars or curated gift sets.</span>
+            <span class="q">What problem does it solve?</span>
+            <span class="a">Bridges generic and luxury gifting, offering indulgent chocolate that's healthier, functional and guilt-free.</span>
+          </div>
+          <div class="card w-card">
+            <span class="w-letter">Why</span>
+            <span class="q">Why would someone buy this?</span>
+            <span class="a">Removes the usual trade-offs — a premium, Indian, healthy, unique gift that feels meaningful to give, unlike generic or overpriced options.</span>
+            <span class="q">Why date seeds?</span>
+            <span class="a">A widely discarded yet nutrient-rich ingredient — making the waste-to-value story authentic and ownable.</span>
+          </div>
+          <div class="card w-card">
+            <span class="w-letter">Who</span>
+            <span class="q">Who is buying it?</span>
+            <span class="a">Urban Indians (22–35) in Tier 1 cities — personal gifters and corporate buyers seeking thoughtful, story-driven, health-conscious gifts.</span>
+            <span class="q">Who is receiving it?</span>
+            <span class="a">A broad audience (16–55) — the product must feel personal to both giver and receiver.</span>
+          </div>
+          <div class="card w-card">
+            <span class="w-letter">When</span>
+            <span class="q">When do people buy this?</span>
+            <span class="a">Diwali, New Year, birthdays and corporate gifting — October–November is the peak buying window.</span>
+            <span class="q">When do people eat it?</span>
+            <span class="a">As a mindful treat, post-meal or during breaks, savoured slowly.</span>
+          </div>
+          <div class="card w-card">
+            <span class="w-letter">Where</span>
+            <span class="q">Where is it sold?</span>
+            <span class="a">Primarily D2C (website, Instagram), plus quick commerce, premium retail, specialty food outlets, cafés and corporate bulk channels.</span>
+            <span class="q">Where is it consumed?</span>
+            <span class="a">At home or work, during slow, intentional moments — not eaten on the go.</span>
+          </div>
+          <div class="card w-card">
+            <span class="w-letter">How</span>
+            <span class="q">How does the buyer discover it?</span>
+            <span class="a">Primarily Instagram (Reels, shares), word-of-mouth, lifestyle features (The Hindu, Condé Nast Traveller India, Vogue India), and direct corporate outreach before Diwali.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 AUDIENCE -->
+      <section id="audience">
+        <div class="sec-head"><span class="sec-num">06</span><h2>Audience analysis & personas</h2></div>
+        <p class="lede">The individual direction narrows to a primary buyer, a secondary corporate buyer, and a wider gifting universe design decisions still need to feel relevant to.</p>
+
+        <div class="aud-grid">
+          <div class="card aud-card">
+            <span class="tag">Primary target audience</span>
+            <h3>Urban Professionals & Students</h3>
+            <div class="aud-facts">
+              <div><span class="k">Age</span><span class="v">22–30</span></div>
+              <div><span class="k">Gender</span><span class="v">Equal split</span></div>
+              <div><span class="k">Location</span><span class="v">Tier 1 — Mumbai, Bengaluru, Delhi, Hyderabad, Pune</span></div>
+              <div><span class="k">Income</span><span class="v">Rs. 40,000–1,50,000/mo</span></div>
+            </div>
+            <div class="aud-list">
+              <div class="h">Values & motivations</div>
+              <ul>
+                <li>Authenticity — real ingredient stories over marketing</li>
+                <li>Intentionality — fewer, better purchases</li>
+                <li>Environmental awareness — low-waste, sustainable products</li>
+                <li>Social currency — shares products that reflect identity</li>
+                <li>Experience-first — values how it feels, not just what it is</li>
+              </ul>
+              <div class="h">Gifting behaviour</div>
+              <ul>
+                <li>Avoids generic gifts (dry fruits, vouchers)</li>
+                <li>Chooses unique items the recipient wouldn't buy themselves</li>
+                <li>Shops brands like Paper Boat, The Whole Truth, Paul and Mike, Diaspora Co.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card aud-card">
+            <span class="tag">Secondary target audience</span>
+            <h3>Corporate Gifting Managers</h3>
+            <div class="aud-facts">
+              <div><span class="k">Age</span><span class="v">28–45</span></div>
+              <div><span class="k">Roles</span><span class="v">HR, admin, marketing, founders</span></div>
+              <div><span class="k">Company</span><span class="v">Startups, mid-size companies</span></div>
+              <div><span class="k">Budget</span><span class="v">Rs. 800–2,500 / person</span></div>
+            </div>
+            <div class="aud-list">
+              <div class="h">What they handle</div>
+              <ul>
+                <li>Diwali gifts, year-end employee kits, client gifting</li>
+              </ul>
+              <div class="h">Mindset</div>
+              <ul>
+                <li>Bored of repetitive options (dry fruits, Cadbury boxes)</li>
+                <li>Want something premium, different, brand-reflective</li>
+                <li>Don't actively discover new products — follow what 22–30s validate</li>
+                <li>If something feels "cool" and credible, they bulk order (50+ units)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card wider-tg" style="margin-top:16px;">
+          <b>Market TG (wider audience):</b> since this is a gifting product, the realistic buyer-and-receiver universe spans 16–55 years — someone's aunt could receive this at Diwali, a 19-year-old could gift it to a friend on their birthday. This wider market is referenced for commercial scope, but all design decisions serve the 22–30 primary audience.
+        </div>
+
+        <!-- Persona 1 -->
+        <div class="card persona" style="margin-top:24px;">
+          <div class="persona-head">
+            <div class="who"><img class="avatar" src="data:image/jpeg;base64,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" alt="Portrait of Anika Sharma"><div>
+              <h3>Anika Sharma</h3>
+              <span class="role">The Intentional Gifter</span>
+            </div></div>
+            <div class="persona-facts">
+              <div><span class="k">Age</span><span class="v">26</span></div>
+              <div><span class="k">City</span><span class="v">Bengaluru</span></div>
+              <div><span class="k">Occupation</span><span class="v">UX Designer</span></div>
+              <div><span class="k">Income</span><span class="v">Rs. 65,000/mo</span></div>
+              <div><span class="k">Role</span><span class="v">Primary buyer</span></div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div>
+              <span class="h">Background</span>
+              <ul>
+                <li>From Pune; moved to Bengaluru 2 years ago, lives alone in Indiranagar</li>
+                <li>Shops at Good Earth occasionally; uses Swiggy Instamart</li>
+                <li>Discovers via Instagram Reels + friends</li>
+                <li>Keeps curated favourites: Papier, Mason & Co, Diaspora Co.</li>
+              </ul>
+              <span class="h">Buying behaviour</span>
+              <ul>
+                <li>Research-driven: ingredients, Instagram, YouTube</li>
+                <li>Spends on quality — one good item over many cheap ones</li>
+                <li>Discovers around October; short ~2-week decision window</li>
+                <li>Prefers D2C brands; shares aesthetic packaging before using it</li>
+              </ul>
+            </div>
+            <div>
+              <span class="h">Pain points</span>
+              <ul>
+                <li>Chocolate gifts feel either generic (Cadbury) or too premium/imported</li>
+                <li>No multi-day gifting experience — it ends when opened</li>
+                <li>Craft chocolates skew older in design; missing Indian roots + modern appeal</li>
+              </ul>
+              <span class="h">Gain points</span>
+              <ul>
+                <li>A countdown format extends the gifting experience</li>
+                <li>Date seed story adds a strong narrative</li>
+                <li>Dark chocolate + functional benefits = guilt-free indulgence</li>
+                <li>Packaging matches her aesthetic, not traditional hampers</li>
+              </ul>
+            </div>
+          </div>
+          <div class="quote">"I spent two hours last Diwali trying to find something that didn't look like I just grabbed it off a supermarket shelf. I ended up ordering from Paul and Mike but honestly I still felt like it could've been more — more personal, more interesting, more something. I want to give something that makes someone think 'she really thought about this.'"</div>
+        </div>
+
+        <!-- Persona 2 -->
+        <div class="card persona" style="margin-top:20px;">
+          <div class="persona-head">
+            <div class="who"><img class="avatar" src="data:image/jpeg;base64,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" alt="Portrait of Rohan Mehta"><div>
+              <h3>Rohan Mehta</h3>
+              <span class="role">The Culture-Conscious HR Head</span>
+            </div></div>
+            <div class="persona-facts">
+              <div><span class="k">Age</span><span class="v">34</span></div>
+              <div><span class="k">City</span><span class="v">Mumbai</span></div>
+              <div><span class="k">Occupation</span><span class="v">HR Manager, 200-person startup</span></div>
+              <div><span class="k">Income</span><span class="v">Rs. 1,20,000/mo</span></div>
+              <div><span class="k">Role</span><span class="v">Corporate buyer</span></div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div>
+              <span class="h">Background</span>
+              <ul>
+                <li>3 years handling Diwali gifting; past gifts (dry fruits, Cadbury) felt forgettable</li>
+                <li>Wants gifting to reflect company identity — strong design + sustainability culture</li>
+                <li>Young team (24–32) that notices quality</li>
+              </ul>
+              <span class="h">Buying behaviour</span>
+              <ul>
+                <li>Budget: Rs. 800–1,500 (employees), Rs. 2,000–5,000 (clients)</li>
+                <li>Timeline: researches in September, finalises by mid-October</li>
+                <li>Values thoughtfulness over price; needs bulk ordering & reliable delivery</li>
+              </ul>
+            </div>
+            <div>
+              <span class="h">Pain points</span>
+              <ul>
+                <li>Generic bulk options (Cadbury, dry fruits) or too expensive</li>
+                <li>High minimum order quantities; poor bulk logistics across cities</li>
+                <li>"Customisation" limited to logo stickers</li>
+              </ul>
+              <span class="h">Gain points</span>
+              <ul>
+                <li>A story he can easily communicate (date seed, waste-to-value, Indian flavours)</li>
+                <li>Share-worthy product → organic visibility</li>
+                <li>Health-aligned (dark chocolate, no refined sugar, prebiotic) and design-forward without looking corporate</li>
+              </ul>
+            </div>
+          </div>
+          <div class="quote">"Every year I send a message to the team saying 'your Diwali gift is on its way' and I want them to actually be excited when they open it. Last year someone said 'oh, chocolates' and that was it. This year I want someone to take a photo of it. I want it to be the kind of thing people talk about at their desk."</div>
+        </div>
+      </section>
+
+      <!-- 07 COMPETITORS -->
+      <section id="competitors">
+        <div class="sec-head"><span class="sec-num">07</span><h2>Competitors & positioning</h2></div>
+        <p class="lede">Direct and indirect competitors in the Indian craft-chocolate and D2C mithai space.</p>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Brand</th><th>What they are</th><th>Price range</th><th>Product offering</th><th>Health claim</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="brand">Paul and Mike</td>
+                <td>Indian craft bean-to-bar chocolate brand</td>
+                <td>Rs. 250–350/bar; gift sets Rs. 800–1,500</td>
+                <td>Single-origin dark & milk bars in Indian flavours — Sitaphal, Thandai, Peanut Chikki, Jamun</td>
+                <td><span class="pill none">None</span></td>
+              </tr>
+              <tr>
+                <td class="brand">Mason and Co</td>
+                <td>India's first organic bean-to-bar chocolate maker</td>
+                <td>Rs. 350–600/bar; gift sets Rs. 1,000–2,000</td>
+                <td>Organic single-origin dark chocolate bars, cacao nibs, bespoke gift boxes</td>
+                <td><span class="pill has">Organic certified</span></td>
+              </tr>
+              <tr>
+                <td class="brand">Bombay Sweet Shop</td>
+                <td>Modern D2C mithai brand reimagining Indian sweets</td>
+                <td>Gift boxes Rs. 400–2,500+; hampers up to Rs. 5,000</td>
+                <td>Reimagined mithai — chocolate barfis, fusion sweets, festive hampers</td>
+                <td><span class="pill none">None</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="pos-note">Sources: pricing via paulandmike.in, masonchocolate.com, bombaysweetshop.in</p>
+
+        <div class="card pos-map">
+          <span class="form-list-title">Positioning map — cost × sensibility</span>
+          <svg viewBox="0 0 640 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Positioning map with cost on the vertical axis and traditional to modern on the horizontal axis">
+            <line x1="320" y1="24" x2="320" y2="396" stroke="var(--line)" stroke-width="1.5"/>
+            <line x1="50" y1="210" x2="590" y2="210" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="320" y="14" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle" letter-spacing="0.05em">HIGH COST</text>
+            <text x="320" y="418" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle" letter-spacing="0.05em">LOW COST</text>
+            <text x="22" y="210" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle" letter-spacing="0.05em" transform="rotate(-90 22 210)">TRADITIONAL</text>
+            <text x="618" y="210" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle" letter-spacing="0.05em" transform="rotate(90 618 210)">MODERN</text>
+
+            <circle cx="125" cy="94" r="7" fill="var(--gold)"/>
+            <text x="139" y="98" font-family="Karla, sans-serif" font-size="13" fill="var(--ink-soft)">Bombay Sweet Shop</text>
+
+            <circle cx="437" cy="73" r="7" fill="var(--gold)"/>
+            <text x="451" y="77" font-family="Karla, sans-serif" font-size="13" fill="var(--ink-soft)">Mason and Co</text>
+
+            <circle cx="365" cy="150" r="7" fill="var(--gold)"/>
+            <text x="379" y="154" font-family="Karla, sans-serif" font-size="13" fill="var(--ink-soft)">Paul and Mike</text>
+
+            <circle cx="125" cy="274" r="7" fill="var(--gold)"/>
+            <text x="139" y="278" font-family="Karla, sans-serif" font-size="13" fill="var(--ink-soft)">Mithai &amp; dry-fruit boxes</text>
+
+            <circle cx="130" cy="353" r="7" fill="var(--gold)"/>
+            <text x="144" y="357" font-family="Karla, sans-serif" font-size="13" fill="var(--ink-soft)">Cadbury</text>
+
+            <circle cx="320" cy="178" r="10" fill="var(--maroon)"/>
+            <text x="304" y="182" font-family="Fraunces, serif" font-weight="600" font-size="15" fill="var(--maroon)" text-anchor="end">My brand</text>
+          </svg>
+          <p class="pos-note">My brand sits in the middle, between modern and traditional. Positions follow my original map and are approximate.</p>
+        </div>
+      </section>
+
+      <!-- 08 CLAIMS + COSTING -->
+      <section id="claims">
+        <div class="sec-head"><span class="sec-num">08</span><h2>Claims & product costing</h2></div>
+        <p class="lede">Product offering, USP, the health/sourcing claims behind it, and how the SKU ladder is priced across gifting occasions.</p>
+
+        <div class="usp-banner">
+          <p>"The only Indian dark chocolate made from what the world throws away — six flavours rooted in Indian food memory, sweetened with date syrup, enriched with date seed powder for prebiotic fibre and antioxidants. A chocolate worth gifting because it's worth eating."</p>
+        </div>
+
+        <div class="table-scroll">
+          <table class="claims-table">
+            <thead><tr><th>Claim</th><th>What it means</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td>Prebiotic</td><td>Date seeds are rich in oligosaccharides that feed beneficial gut bacteria</td><td>Tamar (2025) / PMC Research</td></tr>
+              <tr><td>Rich in antioxidants</td><td>Phenolic compounds, flavonoids and tannins combat oxidative stress</td><td>NutsBazaar (2025) / Springer</td></tr>
+              <tr><td>Rich in dietary fibre</td><td>High fibre content supports digestion and gut microbiome</td><td>IJERT Study (2025) / RSC (2026)</td></tr>
+              <tr><td>Upcycled ingredient</td><td>Date seeds are agricultural waste — zero new resources extracted</td><td>RSC Publishing (2026)</td></tr>
+              <tr><td>No refined sugar</td><td>Sweetened with date syrup — natural, low glycaemic index</td><td>IJERT Study (2025)</td></tr>
+              <tr><td>No artificial flavouring</td><td>Natural spice oils and fruit extracts only</td><td>Product formulation principle</td></tr>
+              <tr><td>Dark chocolate base</td><td>Higher cocoa content, more antioxidants, lower sugar than milk chocolate</td><td>Healthline (2025)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-scroll" style="margin-top:20px;">
+          <table class="cost-table">
+            <thead><tr><th>SKU</th><th>Price</th><th>Occasion</th></tr></thead>
+            <tbody>
+              <tr><td class="brand">Single bar</td><td>Rs. 280–350</td><td>Self purchase, small gift</td></tr>
+              <tr><td class="brand">Gift set of 3</td><td>Rs. 750–900</td><td>Birthday, casual gifting</td></tr>
+              <tr><td class="brand">Gift set of 6</td><td>Rs. 1,299–1,499</td><td>Diwali, corporate celebrations</td></tr>
+              <tr><td class="brand">Corporate bulk (6-bar set, 25+ units)</td><td>Rs. 999–1,199 / unit</td><td>Corporate Diwali, year-end, new employee kits</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="pos-note">Sources: Paul and Mike pricing via paulandmike.in / Mason & Co via masonchocolate.com / Bombay Sweet Shop via bombaysweetshop.in</p>
+      </section>
+
+      <!-- 09 FLAVOURS -->
+      <section id="flavours">
+        <div class="sec-head"><span class="sec-num">09</span><h2>Flavour offering</h2></div>
+        <p class="lede">Six flavours rooted in Indian food memory, layered onto the date seed dark chocolate base. Each pack speaks to the origin of its flavour, styled after the folk art or signature patterns of that state.</p>
+        <div class="flav-cards">
+          <div class="card flav-card"><span class="flav-region">Varanasi</span><h3>Banarasi Paan</h3><p>Paan leaves, fennel, cherry, cardamom</p></div>
+          <div class="card flav-card"><span class="flav-region">Mumbai</span><h3>Cutting Chai</h3><p>Strong CTC tea extract, ginger, cardamom, a hint of black pepper</p></div>
+          <div class="card flav-card"><span class="flav-region">Ratnagiri</span><h3>Ratnagiri Alphonso &amp; Chilli</h3><p>55% dark Alphonso mango chilli chocolate</p></div>
+          <div class="card flav-card"><span class="flav-region">Kashmir</span><h3>Kashmiri Kahwa</h3><p>Green tea, saffron, cinnamon, cardamom, dried rose petals</p></div>
+          <div class="card flav-card"><span class="flav-region">Rajasthan</span><h3>Thandai</h3><p>Milk, rose, saffron, fennel, melon seeds, pepper, cardamom</p></div>
+          <div class="card flav-card"><span class="flav-region">Kerala</span><h3>Kerala Coconut</h3><p>Toasted coconut</p></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Beyond the Seed — Packaging Design research journal</p>
+    <p>Individual segment: chocolate gifting · 3-week course</p>
+  </div>
+</footer>
+
+</body>
+</html>
